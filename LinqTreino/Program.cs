@@ -1,6 +1,7 @@
 ﻿using LinqTreino;
 using System.Data;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 
 var ordersToShow = Data.Orders.Select(order => new
 {
@@ -81,6 +82,21 @@ foreach (var customer in topCustomers)
 {
     Console.WriteLine(customer);
 }
+
+//Arvore
+
+var tree = Data.Customers.Select(customer => new
+{
+    customer.Name,
+    Orders = Data.Orders.Where(order => order.CustomerId == customer.Id).ToList()
+}).Select(customer => new
+{
+    customer.Name,
+    customer.Orders,
+    TotalItens = customer.Orders.SelectMany(order => order.Items).Sum(item => item.Quantity)
+});
+
+
 
 
 
