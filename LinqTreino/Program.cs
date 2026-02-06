@@ -61,17 +61,21 @@ foreach (var item in productGroups)
     Console.WriteLine(item);
 }
 
-//Clientes que mais compraram itens no total
+//Clientes que mais compraram itens no total 
+//Edit: Esse abaixo foi trezer, mas foi o melhor até agora
 
 var topCustomers = Data.Customers.Join(Data.Orders, customer => customer.Id, order => order.CustomerId, (customer, order) => new
 {
-    
-}).GroupBy(customer => new {customer.Id}).Select(group => new
+    customer.Id,
+    customer.Name,
+    order.Items
+}).GroupBy(customer => new { customer.Id }).Select(group => new
 {
-    group.Key.Id,
-    Total = group
-    
-}).OrderByDescending(customer => customer.Total).Take(3);
+    CustomerId = group.Key.Id,
+    CustomerName = group.First().Name,
+    TotalItens = group.SelectMany(order => order.Items).Sum(item => item.Quantity)
+
+}).OrderByDescending(customer => customer.TotalItens).Take(3);
 
 foreach (var customer in topCustomers)
 {
